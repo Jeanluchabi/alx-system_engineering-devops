@@ -1,7 +1,7 @@
 # The puppet Manifest to kill a process named "killmenow"
 
-exec { 'kill_killmenow':
+exec { 'pkill':
   command     => 'pkill killmenow',
-  provider => 'shell'
+  provider => 'shell',
 }
 
