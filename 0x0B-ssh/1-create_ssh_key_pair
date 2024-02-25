@@ -1,22 +1,6 @@
 #!/usr/bin/env bash
+#This script creates an RSA key pair with set number of bits,
+#the private key and passphrase
 
-# The Name of the private key
-private_key="school"
-
-# The Number of bits
-bits=4096
-
-# Passphrasing
-passphrase="betty"
-
-# Generating RSA key pair
-openssl genpkey -algorithm RSA -out "$private_key.pem" -aes256 -pass pass:"$passphrase" -pkeyopt rsa_keygen_bits:$bits
-
-# Converting private key to RSA format
-openssl rsa -in "$private_key.pem" -outform PEM -out "$private_key_rsa.pem" -passin pass:"$passphrase"
-
-# Removing the original private key file
-rm "$private_key.pem"
-
-echo "RSA key pair created successfully."
+ssh-keygen -b 4096 -N betty -f school
 
