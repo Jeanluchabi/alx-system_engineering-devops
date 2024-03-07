@@ -27,5 +27,7 @@ frontend www-http
     redirect scheme https code 301 if !{ ssl_fc }
 
 backend www-backend
-    server web-server 127.0.0.1:80
+    server web-server_1 127.0.0.1:80
+    server web-server_2 54.162.94.191
+    server web-server_3 35.168.7.44
 
