@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# This Bash script displays DNS information about subdomains.
+
+# Function to retrieve DNS information for a domain and subdomain
+domain_information() {
+    local result
+    result=$(dig +short "$2.$1")
+    if [ -z "$result" ]; then
+        echo "The subdomain $2 is not configured for $1"
+    else
+        local line
+        line=$(dig "$2.$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
+        printf "The subdomain %s is a %s record and points to %s\n" "$2" $line
+    fi
+}
+
+# Main script logic
+case $# in
+    1)
+        domain_information "$1" "www"
+        domain_information "$1" "lb-01"
+        domain_information "$1" "web-01"
+        domain_information "$1" "web-02"
+        ;;
+    2)
+        domain_information "$1" "$2"
+        ;;
+    *)
+        echo "Usage: $0 <domain> <subdomain>"
+        exit 1
+        ;;
+esac
+
