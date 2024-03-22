@@ -1,8 +1,17 @@
 #!/usr/bin/env bash
 
-# This fixes server bug
+# This fix permissions for nginx.conf
 chmod 644 /etc/nginx/nginx.conf
-sed -Ei 's/\s*#?\s*user .*/user nginx;/' /etc/nginx/nginx.conf
-sed -Ei 's/(listen (\[::\]:)?80) /\180 /' /etc/nginx/sites-enabled/default
-pkill apache2
-su nginx -s /bin/bash -c 'service nginx restart'
+
+# This modifies nginx.conf to run as nginx user
+sed -i -E 's/\s*#?\s*user .*/user nginx;/' /etc/nginx/nginx.conf
+
+# This modify default server configuration to listen on port 8080
+sed -i -E 's/(listen (\[::\]:)?80) /\180 /' /etc/nginx/sites-enabled/default
+
+# This stops Apache service gracefully
+service apache2 stop
+
+# This restart Nginx service
+service nginx restart
+

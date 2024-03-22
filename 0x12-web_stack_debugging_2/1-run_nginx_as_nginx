@@ -1,17 +1,20 @@
 #!/usr/bin/env bash
 
-# This fixes permissions for nginx.conf
+# This fixes permissions for nginx.conf with backup
 chmod 644 /etc/nginx/nginx.conf
+sed -i.bak -E 's/\s*#?\s*user .*/user nginx;/' /etc/nginx/nginx.conf
 
-# This modifies nginx.conf to run as nginx user
-sed -i -E 's/\s*#?\s*user .*/user nginx;/' /etc/nginx/nginx.conf
+# This modifies default server configuration to listen on port 8080 with backup
+sed -i.bak -E 's/(listen (\[::\]:)?80) /\180 /' /etc/nginx/sites-enabled/default
 
-# This modifies default server configuration to listen on port 8080
-sed -i -E 's/(listen (\[::\]:)?80) /\180 /' /etc/nginx/sites-enabled/default
+# This checks if Apache service is running before stopping
+if systemctl is-active --quiet apache2; then
+    systemctl stop apache2
+fi
 
-# This stop Apache service
-service apache2 stop
+# This adds a brief delay before restarting Nginx
+sleep 1
 
-# This restarts Nginx service
-service nginx restart
+# This restarts Nginx service using systemd command
+systemctl restart nginx
 
